@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens.
+ *
+ * These are fallbacks. The root layout injects the same custom properties from
+ * src/lib/branding.ts after this stylesheet, so branding.ts is the single place
+ * a color actually changes. The values here keep the stylesheet valid on its own.
+ */
+:root {
+  --hedge: #1c2e22;
+  --stripe: #24382b;
+  --cut: #4c9a46;
+  --canvas: #f1f3ee;
+  --card: #ffffff;
+  --ink: #22271f;
+  --muted: #6b7266;
+  --line: #e1e5dc;
+  --orange: #e4762b;
+}
+
+@theme inline {
+  --color-hedge: var(--hedge);
+  --color-stripe: var(--stripe);
+  --color-cut: var(--cut);
+  --color-canvas: var(--canvas);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-orange: var(--orange);
+
+  --font-display: var(--font-barlow-condensed), "Barlow Condensed", system-ui, sans-serif;
+  --font-sans: var(--font-barlow), "Barlow", system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--cut) 30%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--cut);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* The header's repeating diagonal mowing stripe. */
+  .mowing-stripe {
+    background-image: repeating-linear-gradient(
+      105deg,
+      var(--hedge) 0,
+      var(--hedge) 56px,
+      var(--stripe) 56px,
+      var(--stripe) 112px
+    );
+  }
+
+  /* Heading and label treatment: condensed, uppercase, tracked. */
+  .label {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .eyebrow {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .numeric {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mono {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.8125rem;
+  }
+
+  .card {
+    background-color: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+
+  /* Route list dividers are dashed, not solid. */
+  .route-divider {
+    border-bottom: 1px dashed var(--line);
+  }
+}
+
+/* The drag handle should not select text while a stop is being moved. */
+.dragging {
+  opacity: 0.55;
+}
+
+.drop-target {
+  box-shadow: inset 0 2px 0 0 var(--cut);
+}
