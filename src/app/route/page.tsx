@@ -28,14 +28,14 @@ export default async function RoutePage({
 
   const stops = await getRouteForDate(supabase, session.org.id, date);
   const totals = summarizeRoute(stops);
-  const canSeeMoney = session.isOwner;
+  const canSeeMoney = session.isAdmin;
 
   return (
     <AppShell session={session}>
       <PageHeading
         title={date === today() ? "Today's route" : "Route"}
         subtitle={formatIsoDateLong(date)}
-        action={session.isOwner ? <RainRiskToggle enabled={session.org.rain_risk} /> : null}
+        action={session.isAdmin ? <RainRiskToggle enabled={session.org.rain_risk} /> : null}
       />
 
       <div className="mb-4 flex items-center justify-between gap-3">
@@ -81,7 +81,7 @@ export default async function RoutePage({
         <RouteList
           date={date}
           stops={stops.map((stop) => toRouteStopView(stop, canSeeMoney))}
-          canReorder={session.isOwner}
+          canReorder={session.isAdmin}
           canSeeMoney={canSeeMoney}
         />
       </Card>

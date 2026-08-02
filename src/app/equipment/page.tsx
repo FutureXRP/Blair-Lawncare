@@ -46,8 +46,8 @@ export default async function EquipmentPage() {
 
   const equipment = (equipmentRows ?? []) as Equipment[];
 
-  // Maintenance cost is financial, so crew never reads the log.
-  const maintenance = session.isOwner
+  // Maintenance cost is financial, so only admins read the log.
+  const maintenance = session.isAdmin
     ? (
         await supabase
           .from("maintenance_log")
@@ -71,7 +71,7 @@ export default async function EquipmentPage() {
             <CardHeader title="The fleet" meta={`${equipment.length} items`} />
             {equipment.length === 0 ? (
               <EmptyState headline="Nothing on the list yet">
-                {session.isOwner
+                {session.isAdmin
                   ? "Add the mower, trimmer and truck so their service hours are tracked."
                   : "The owner has not added any equipment yet."}
               </EmptyState>
@@ -117,7 +117,7 @@ export default async function EquipmentPage() {
                         )}
                       </div>
 
-                      {session.isOwner ? (
+                      {session.isAdmin ? (
                         <details className="mt-3">
                           <summary className="label cursor-pointer">Update or log service</summary>
                           <div className="mt-3 grid gap-4 sm:grid-cols-2">
@@ -159,7 +159,7 @@ export default async function EquipmentPage() {
             )}
           </Card>
 
-          {session.isOwner && maintenance.length > 0 ? (
+          {session.isAdmin && maintenance.length > 0 ? (
             <Card>
               <CardHeader title="Recent service" meta={`${maintenance.length} entries`} />
               <ul>
@@ -189,7 +189,7 @@ export default async function EquipmentPage() {
           ) : null}
         </div>
 
-        {session.isOwner ? (
+        {session.isAdmin ? (
           <Card className="self-start">
             <CardHeader title="Add equipment" />
             <div className="px-4 py-5 sm:px-5">

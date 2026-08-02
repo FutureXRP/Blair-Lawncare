@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { requireOwner, requireSession } from "@/lib/auth";
+import { requireAdmin, requireSession } from "@/lib/auth";
 import { invoiceCompletedJob } from "@/lib/invoicing";
 import { createClient } from "@/lib/supabase/server";
 import type { JobStatus, TableUpdate } from "@/lib/types";
@@ -74,7 +74,7 @@ export async function setJobStatus(
 
 /** Retries the QuickBooks invoice for a job that completed while QBO was down. */
 export async function retryJobInvoice(jobId: string): Promise<ActionResult> {
-  await requireOwner();
+  await requireAdmin();
   const supabase = await createClient();
 
   const outcome = await invoiceCompletedJob(supabase, jobId);
@@ -99,7 +99,7 @@ export async function reorderRoute(
   date: string,
   orderedJobIds: string[],
 ): Promise<ActionResult> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   for (const [index, jobId] of orderedJobIds.entries()) {
@@ -119,7 +119,7 @@ export async function reorderRoute(
 }
 
 export async function setRainRisk(rainRisk: boolean): Promise<ActionResult> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const { error } = await supabase

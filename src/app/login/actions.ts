@@ -7,23 +7,24 @@ import { createClient } from "@/lib/supabase/server";
 
 export interface AuthFormState {
   error?: string;
-  notice?: string;
 }
 
-function readCredentials(formData: FormData) {
-  return {
-    email: String(formData.get("email") ?? "").trim(),
-    password: String(formData.get("password") ?? ""),
-    name: String(formData.get("name") ?? "").trim(),
-    next: String(formData.get("next") ?? "/"),
-  };
-}
-
+/**
+ * Signing in is the only thing this screen does.
+ *
+ * There is no public signup. Accounts are created by an admin from the Team
+ * panel in Settings. Removing the form is not what enforces that: the anon key
+ * is public, so anyone could call signUp against the project directly. Signups
+ * have to be switched off in the Supabase dashboard as well, under
+ * Authentication, Sign In / Providers, Email.
+ */
 export async function signIn(
   _state: AuthFormState,
   formData: FormData,
 ): Promise<AuthFormState> {
-  const { email, password, next } = readCredentials(formData);
+  const email = String(formData.get("email") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
+  const next = String(formData.get("next") ?? "/");
 
   if (!email || !password) {
     return { error: "Enter your email and password" };
@@ -38,37 +39,4 @@ export async function signIn(
 
   revalidatePath("/", "layout");
   redirect(next.startsWith("/") ? next : "/");
-}
-
-export async function signUp(
-  _state: AuthFormState,
-  formData: FormData,
-): Promise<AuthFormState> {
-  const { email, password, name } = readCredentials(formData);
-
-  if (!email || !password) {
-    return { error: "Enter your email and password" };
-  }
-  if (password.length < 8) {
-    return { error: "Use a password of at least 8 characters" };
-  }
-
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: { data: { name } },
-  });
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  // With email confirmation switched on there is no session yet.
-  if (!data.session) {
-    return { notice: "Check your email for the confirmation link, then sign in" };
-  }
-
-  revalidatePath("/", "layout");
-  redirect("/");
 }

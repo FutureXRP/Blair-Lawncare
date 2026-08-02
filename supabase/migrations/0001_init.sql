@@ -1,4 +1,4 @@
--- TrueCut Lawn & Landscape - initial schema
+-- Blair Lawn - initial schema
 --
 -- Conventions:
 --   * every table carries org_id so multi-tenant stays possible later

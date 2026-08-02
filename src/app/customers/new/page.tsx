@@ -2,12 +2,12 @@ import { AppShell } from "@/components/AppShell";
 import { ActionForm } from "@/components/ActionForm";
 import { Card, CardHeader, Field, Input, PageHeading, Select, Textarea } from "@/components/ui";
 import { createCustomer } from "@/app/actions/customers";
-import { requireOwner } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export default async function NewCustomerPage() {
-  const session = await requireOwner();
+  const session = await requireAdmin();
 
   return (
     <AppShell session={session}>

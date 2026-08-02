@@ -20,7 +20,7 @@ function settingsRedirect(request: NextRequest, message: string) {
 export async function GET(request: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.redirect(new URL("/login", request.url));
-  if (!session.isOwner) return settingsRedirect(request, "owner_only");
+  if (!session.isAdmin) return settingsRedirect(request, "admin_only");
 
   const cookieStore = await cookies();
   const expectedState = cookieStore.get(STATE_COOKIE)?.value;

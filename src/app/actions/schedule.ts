@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { requireOwner } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { DEFAULT_HORIZON_DAYS, generateJobs } from "@/lib/schedule";
 import { createClient } from "@/lib/supabase/server";
 import type { FormState } from "@/app/actions/customers";
@@ -15,7 +15,7 @@ export async function generateSchedule(
   _state: FormState,
   _formData: FormData,
 ): Promise<FormState> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   try {

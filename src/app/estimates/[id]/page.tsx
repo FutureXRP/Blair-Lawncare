@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
 import { EstimateStatusButtons } from "@/components/EstimateStatusButtons";
 import { Badge, ButtonLink, Card, CardHeader, PageHeading } from "@/components/ui";
-import { requireOwner } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { formatIsoDateLong } from "@/lib/dates";
 import { ESTIMATE_STATUS_LABELS } from "@/lib/estimates";
 import { formatCents, multiplyCents } from "@/lib/money";
@@ -30,7 +30,7 @@ export default async function EstimatePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const { data: estimate } = await supabase

@@ -17,7 +17,7 @@ import {
   Select,
   Textarea,
 } from "@/components/ui";
-import { requireOwner } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { DAY_NAMES, formatIsoDate, today } from "@/lib/dates";
 import { centsToInputValue, formatCents } from "@/lib/money";
 import { STATUS_LABELS } from "@/lib/route";
@@ -41,7 +41,7 @@ export default async function CustomerPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const { data: customer } = await supabase

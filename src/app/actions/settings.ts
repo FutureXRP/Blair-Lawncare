@@ -2,19 +2,19 @@
 
 import { revalidatePath } from "next/cache";
 
-import { requireOwner } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { parseDollarsToCents } from "@/lib/money";
 import { disconnectQbo } from "@/lib/qbo";
 import { syncOrgFromQbo } from "@/lib/qbo-sync";
 import { createClient } from "@/lib/supabase/server";
-import type { InvoicingMode, UserRole } from "@/lib/types";
+import type { InvoicingMode } from "@/lib/types";
 import type { FormState } from "@/app/actions/customers";
 
 export async function updateOrgSettings(
   _state: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const name = String(formData.get("name") ?? "").trim();
@@ -42,29 +42,9 @@ export async function updateOrgSettings(
   return { notice: "Settings saved" };
 }
 
-export async function setTeamRole(userId: string, role: UserRole): Promise<FormState> {
-  const session = await requireOwner();
-  const supabase = await createClient();
-
-  if (userId === session.userId) {
-    return { error: "You cannot change your own role" };
-  }
-
-  const { error } = await supabase
-    .from("profiles")
-    .update({ role })
-    .eq("id", userId)
-    .eq("org_id", session.org.id);
-
-  if (error) return { error: error.message };
-
-  revalidatePath("/settings");
-  return { notice: role === "owner" ? "Promoted to owner" : "Set to crew" };
-}
-
 /** Pulls a fresh snapshot from QuickBooks on demand. */
 export async function syncQboNow(): Promise<FormState> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const result = await syncOrgFromQbo(supabase, session.org.id);
@@ -78,7 +58,7 @@ export async function syncQboNow(): Promise<FormState> {
 }
 
 export async function disconnectQuickBooks(): Promise<FormState> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   await disconnectQbo(supabase, session.org.id);

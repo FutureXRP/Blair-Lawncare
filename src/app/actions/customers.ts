@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
-import { requireOwner } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { parseDollarsToCents } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
 import type { CustomerStatus, Frequency, PricingUnit } from "@/lib/types";
@@ -37,7 +37,7 @@ export async function createCustomer(
   _state: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const name = text(formData, "name");
@@ -83,7 +83,7 @@ export async function updateCustomer(
   _state: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  await requireOwner();
+  await requireAdmin();
   const supabase = await createClient();
 
   const id = text(formData, "id");
@@ -117,7 +117,7 @@ export async function saveProperty(
   _state: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const customerId = text(formData, "customer_id");
@@ -156,7 +156,7 @@ export async function createService(
   _state: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const name = text(formData, "name");
@@ -188,7 +188,7 @@ export async function createRecurringJob(
   _state: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const propertyId = text(formData, "property_id");
@@ -231,7 +231,7 @@ export async function setRecurringJobActive(
   recurringJobId: string,
   active: boolean,
 ): Promise<FormState> {
-  await requireOwner();
+  await requireAdmin();
   const supabase = await createClient();
 
   const { error } = await supabase

@@ -1,16 +1,16 @@
 /**
  * Single source of truth for branding.
  *
- * "TrueCut" is a placeholder name. To rebrand the whole app, change the values
- * in this file and nothing else. The color values are injected as CSS custom
- * properties by the root layout, and Tailwind's theme maps its color names onto
- * those same custom properties, so a color changed here changes everywhere.
+ * To rebrand the whole app, change the values in this file and nothing else.
+ * The colors are injected as CSS custom properties by the root layout, and
+ * Tailwind's theme maps its color names onto those same custom properties, so a
+ * color changed here changes everywhere.
  */
 
 export const branding = {
-  name: "TrueCut",
-  fullName: "TrueCut Lawn & Landscape",
-  tagline: "Lawn & Landscape",
+  name: "Blair Lawn",
+  fullName: "Blair Lawn",
+  tagline: "Lawn Care",
 
   /**
    * Logo mark. Kept as inline SVG path data so there is no asset to swap and no

@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
-import { requireOwner } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { totalForLines } from "@/lib/estimates";
 import { parseDollarsToCents } from "@/lib/money";
 import {
@@ -65,7 +65,7 @@ export async function createEstimate(
   _state: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const customerId = String(formData.get("customer_id") ?? "");
@@ -105,7 +105,7 @@ export async function setEstimateStatus(
   estimateId: string,
   status: EstimateStatus,
 ): Promise<FormState> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const now = new Date().toISOString();
@@ -178,7 +178,7 @@ async function mirrorEstimateToQbo(estimateId: string): Promise<{ error?: string
     const mirrored = await createEstimateMirror(connection, {
       qboCustomerId,
       lines,
-      privateNote: `truecut:estimate:${estimate.id}`,
+      privateNote: `blairlawn:estimate:${estimate.id}`,
     });
 
     await supabase

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { AppShell } from "@/components/AppShell";
 import { Badge, ButtonLink, Card, CardHeader, EmptyState, PageHeading } from "@/components/ui";
-import { requireOwner } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { formatSyncedAt, hoursSince } from "@/lib/dates";
 import { ESTIMATE_STATUS_LABELS } from "@/lib/estimates";
 import { formatCents } from "@/lib/money";
@@ -12,7 +12,7 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export default async function EstimatesPage() {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const { data: estimates } = await supabase

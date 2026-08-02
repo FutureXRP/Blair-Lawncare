@@ -16,11 +16,11 @@ function settingsRedirect(request: NextRequest, message: string) {
   return NextResponse.redirect(url);
 }
 
-/** Starts the QuickBooks OAuth flow. Owner only. */
+/** Starts the QuickBooks OAuth flow. Admins only. */
 export async function GET(request: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.redirect(new URL("/login", request.url));
-  if (!session.isOwner) return settingsRedirect(request, "owner_only");
+  if (!session.isAdmin) return settingsRedirect(request, "admin_only");
 
   if (!readQboConfig()) return settingsRedirect(request, "not_configured");
   if (!isEncryptionConfigured()) return settingsRedirect(request, "no_encryption_key");

@@ -1,4 +1,4 @@
-# TrueCut Lawn & Landscape Dashboard
+# Blair Lawn Dashboard
 
 Operations dashboard for a small family landscaping company. It runs customers,
 properties, recurring schedules, the daily route, estimates and equipment, and
@@ -10,7 +10,7 @@ No accounting logic is duplicated locally. If a number is financial truth, QBO
 is the source of that truth, and the UI says so next to the number along with
 the time it was synced.
 
-"TrueCut" is a working name. All branding lives in `src/lib/branding.ts`.
+All branding, the company name included, lives in `src/lib/branding.ts`.
 
 ## Stack
 
@@ -52,13 +52,15 @@ plaintext and never in env.
 Run the migrations in order against your Supabase project:
 
 ```
-supabase/migrations/0001_init.sql        schema, indexes, RLS
-supabase/migrations/0002_bootstrap.sql   first signup becomes the owner
-supabase/seed.sql                        optional demo data, local only
+supabase/migrations/0001_init.sql                 schema, indexes, RLS
+supabase/migrations/0002_bootstrap.sql            org bootstrap on first account
+supabase/migrations/0003_roles_and_managed_users  admin/manager/staff roles
+supabase/seed.sql                                 optional demo data, local only
 ```
 
-The first account to sign up creates the org and becomes its owner. Everyone
-after that joins as crew, and the owner can promote them from Settings.
+There is no public signup. The first account created becomes the admin and
+owns the org; every account after that is created by an admin from the Team
+panel in Settings, with a role of admin, manager or staff.
 
 ### QuickBooks
 
@@ -106,26 +108,41 @@ renders a zero, a dash, or a placeholder styled to look like real data. When a
 sync fails, the last good snapshot stays on screen, flagged orange with the time
 it was actually taken.
 
-### Roles
+### Roles and accounts
 
-Row Level Security enforces the split, and the app routes reinforce it:
+Three roles: **admin**, **manager**, **staff**. Access is still two tier, which
+is deliberate. Admin sees everything; manager and staff see operations only.
+When the real permission matrix is decided, `public.has_full_access()` in
+`0003_roles_and_managed_users.sql` is the single predicate every policy calls,
+and `ROLES_WITH_FULL_ACCESS` in `src/lib/types.ts` is its mirror in the app.
 
-| Table | Owner | Crew |
+| Table | Admin | Manager and staff |
 |---|---|---|
 | `customers`, `properties`, `equipment` | read and write | read |
 | `jobs` | read and write | read their own route, update status only |
 | `services`, `recurring_jobs`, `estimates`, `maintenance_log`, `qbo_sync_state` | read and write | no access |
 
-A database trigger also rejects any attempt by a crew member to change
+A database trigger also rejects any attempt by a non admin to change
 `price_cents`, `qbo_invoice_id` or the assignment on a job, so the invoice
-amount can only ever come from the schedule the owner set. Crew never receive a
-job price over the wire: it is dropped server side in `src/lib/route-view.ts`
-rather than hidden with CSS.
+amount can only ever come from the schedule an admin set. They never receive a
+job price over the wire either: it is dropped server side in
+`src/lib/route-view.ts` rather than hidden with CSS.
+
+**There is no public signup.** The login screen only signs people in. Accounts
+are created by an admin in Settings, which sets the password and role in one
+step so nothing depends on email delivery. Any admin can move another account
+to admin, which is how ownership is handed over. Nobody can change their own
+role, so the org always has at least one admin.
+
+Removing the signup form is not what enforces this. The anon key is public, so
+`signUp` can be called against the project directly. Turn signups off in the
+Supabase dashboard too, under Authentication, Sign In / Providers, Email.
 
 ## Checks
 
 ```bash
 npm run verify      # money path and schedule cadence, 38 assertions
+npm run verify:db   # migrations and role rules on a throwaway Postgres, 23 checks
 npm run typecheck   # tsc --noEmit
 npm run build       # production build
 ```
@@ -134,9 +151,15 @@ npm run build       # production build
 matters: parsing and formatting cents, the QBO conversion round trip, and the
 weekly, biweekly and monthly cadence rules including season bounds.
 
+`npm run verify:db` applies every migration in order to a scratch database and
+then acts as a real admin, manager and staff account to check what each one can
+actually read and write. It needs a Postgres at `$PGURL`, defaulting to
+`postgresql://postgres@localhost:55432`. `scripts/test-migrations.sql` stubs the
+parts of Supabase's `auth` schema the policies depend on.
+
 ## What is in the MVP
 
-1. Auth and org setup, owner and crew roles
+1. Auth and org setup, admin / manager / staff roles, accounts created by an admin
 2. Customers and properties with the notes the crew needs on site
 3. Recurring scheduling, generating jobs two weeks ahead, safe to re-run
 4. Today's Route, drag to reorder, status transitions, day totals

@@ -30,7 +30,7 @@ export type InvoiceOutcome =
 
 /** Stable per job, which is what makes the duplicate check possible. */
 function privateNoteForJob(jobId: Uuid): string {
-  return `truecut:job:${jobId}`;
+  return `blairlawn:job:${jobId}`;
 }
 
 export async function invoiceCompletedJob(db: Db, jobId: Uuid): Promise<InvoiceOutcome> {

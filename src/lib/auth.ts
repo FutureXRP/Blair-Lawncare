@@ -3,6 +3,7 @@ import "server-only";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { hasFullAccess } from "@/lib/types";
 import type { Org, Profile } from "@/lib/types";
 
 export interface Session {
@@ -10,7 +11,7 @@ export interface Session {
   email: string | null;
   profile: Profile;
   org: Org;
-  isOwner: boolean;
+  isAdmin: boolean;
 }
 
 /** Returns null when nobody is signed in. */
@@ -41,7 +42,7 @@ export async function getSession(): Promise<Session | null> {
     email: user.email ?? null,
     profile,
     org,
-    isOwner: profile.role === "owner",
+    isAdmin: hasFullAccess(profile.role),
   };
 }
 
@@ -52,12 +53,12 @@ export async function requireSession(): Promise<Session> {
 }
 
 /**
- * Guards the financial screens. Row Level Security already blocks crew from
- * reading the underlying tables; this turns that into a clear redirect instead
- * of an empty page.
+ * Guards the financial screens. Row Level Security already blocks the other
+ * roles from reading the underlying tables; this turns that into a clear
+ * redirect instead of an empty page.
  */
-export async function requireOwner(): Promise<Session> {
+export async function requireAdmin(): Promise<Session> {
   const session = await requireSession();
-  if (!session.isOwner) redirect("/route");
+  if (!session.isAdmin) redirect("/route");
   return session;
 }

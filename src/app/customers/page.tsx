@@ -40,7 +40,7 @@ export default async function CustomersPage() {
         title="Customers"
         subtitle={`${rows.length} on the books`}
         action={
-          session.isOwner ? <ButtonLink href="/customers/new">Add a customer</ButtonLink> : null
+          session.isAdmin ? <ButtonLink href="/customers/new">Add a customer</ButtonLink> : null
         }
       />
 
@@ -49,7 +49,7 @@ export default async function CustomersPage() {
           <EmptyState
             headline="No customers yet"
             action={
-              session.isOwner ? (
+              session.isAdmin ? (
                 <ButtonLink href="/customers/new">Add a customer</ButtonLink>
               ) : null
             }

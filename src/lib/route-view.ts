@@ -2,7 +2,7 @@ import type { RouteStopView } from "@/components/RouteList";
 import type { RouteStop } from "@/lib/types";
 
 /**
- * Flattens a route stop for the client component. When the viewer is crew the
+ * Flattens a route stop for the client component. Without full access the
  * price is dropped here rather than hidden with CSS, so it never reaches the
  * browser at all.
  */

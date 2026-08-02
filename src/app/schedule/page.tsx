@@ -4,7 +4,7 @@ import { generateSchedule } from "@/app/actions/schedule";
 import { ActionForm } from "@/components/ActionForm";
 import { AppShell } from "@/components/AppShell";
 import { Badge, Card, CardHeader, EmptyState, PageHeading } from "@/components/ui";
-import { requireOwner } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { addDays, formatIsoDate, today } from "@/lib/dates";
 import { formatCents, sumCents } from "@/lib/money";
 import { DEFAULT_HORIZON_DAYS } from "@/lib/schedule";
@@ -13,7 +13,7 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export default async function SchedulePage() {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const windowStart = today();

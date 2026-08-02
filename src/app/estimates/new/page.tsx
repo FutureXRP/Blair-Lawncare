@@ -3,14 +3,14 @@ import { ActionForm } from "@/components/ActionForm";
 import { AppShell } from "@/components/AppShell";
 import { EstimateLineEditor } from "@/components/EstimateLineEditor";
 import { ButtonLink, Card, CardHeader, EmptyState, Field, PageHeading, Select } from "@/components/ui";
-import { requireOwner } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { centsToInputValue } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
 export default async function NewEstimatePage() {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const [customersResult, servicesResult] = await Promise.all([

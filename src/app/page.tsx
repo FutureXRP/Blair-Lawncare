@@ -7,7 +7,7 @@ import { RainRiskToggle } from "@/components/RainRiskToggle";
 import { RouteList } from "@/components/RouteList";
 import { SyncBadge } from "@/components/SyncBadge";
 import { ButtonLink, Card, CardHeader, PageHeading } from "@/components/ui";
-import { requireOwner } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { loadDashboard } from "@/lib/dashboard";
 import { formatIsoDate, formatIsoDateLong, today } from "@/lib/dates";
 import { formatCents, formatCentsCompact } from "@/lib/money";
@@ -19,7 +19,7 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
   const currentDate = today();
 

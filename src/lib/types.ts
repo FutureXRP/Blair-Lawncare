@@ -9,7 +9,39 @@ export type Uuid = string;
 export type Timestamp = string;
 export type DateString = string;
 
-export type UserRole = "owner" | "crew";
+/**
+ * Roles as stored in profiles.role.
+ *
+ * Access is still two tier: admin sees everything, manager and staff see
+ * operations only. When the real permission matrix is decided, widen
+ * has_full_access() in the database and ROLES_WITH_FULL_ACCESS below.
+ */
+export type UserRole = "admin" | "manager" | "staff";
+
+export const USER_ROLES: UserRole[] = ["admin", "manager", "staff"];
+
+export const USER_ROLE_LABELS: Record<UserRole, string> = {
+  admin: "Admin",
+  manager: "Manager",
+  staff: "Staff",
+};
+
+export const USER_ROLE_DESCRIPTIONS: Record<UserRole, string> = {
+  admin: "Everything, including money, QuickBooks and adding people",
+  manager: "Route and customers. No financial screens yet",
+  staff: "Route and customers. No financial screens yet",
+};
+
+/**
+ * The mirror of has_full_access() in the database. These two must agree, and
+ * the database is the one that actually enforces it.
+ */
+export const ROLES_WITH_FULL_ACCESS: UserRole[] = ["admin"];
+
+export function hasFullAccess(role: UserRole): boolean {
+  return ROLES_WITH_FULL_ACCESS.includes(role);
+}
+
 export type CustomerStatus = "lead" | "estimate" | "active" | "paused" | "churned";
 export type PricingUnit = "flat" | "per_visit" | "per_sqft";
 export type Frequency = "weekly" | "biweekly" | "monthly";

@@ -9,9 +9,9 @@ export const metadata = { title: `Sign in · ${branding.name}` };
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; mode?: string }>;
+  searchParams: Promise<{ next?: string }>;
 }) {
-  const { next, mode } = await searchParams;
+  const { next } = await searchParams;
 
   const configured = Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -19,7 +19,7 @@ export default async function LoginPage({
 
   if (configured) {
     const session = await getSession();
-    if (session) redirect(session.isOwner ? "/" : "/route");
+    if (session) redirect(session.isAdmin ? "/" : "/route");
   }
 
   return (
@@ -32,7 +32,7 @@ export default async function LoginPage({
           <h1 className="mt-1 text-2xl uppercase text-ink">{branding.tagline}</h1>
 
           {configured ? (
-            <LoginForm next={next ?? "/"} initialMode={mode === "signup" ? "signup" : "signin"} />
+            <LoginForm next={next ?? "/"} />
           ) : (
             <div className="mt-5 rounded border border-orange/40 bg-orange/10 px-4 py-3 text-sm text-ink">
               <p className="text-orange">Supabase is not configured yet.</p>

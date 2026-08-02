@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { requireOwner } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
 import { parseDollarsToCents } from "@/lib/money";
 import { createClient } from "@/lib/supabase/server";
 import type { EquipmentCategory } from "@/lib/types";
@@ -23,7 +23,7 @@ export async function createEquipment(
   _state: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const name = text(formData, "name");
@@ -52,7 +52,7 @@ export async function updateEngineHours(
   _state: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  await requireOwner();
+  await requireAdmin();
   const supabase = await createClient();
 
   const id = text(formData, "id");
@@ -81,7 +81,7 @@ export async function logMaintenance(
   _state: FormState,
   formData: FormData,
 ): Promise<FormState> {
-  const session = await requireOwner();
+  const session = await requireAdmin();
   const supabase = await createClient();
 
   const equipmentId = text(formData, "equipment_id");

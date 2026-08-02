@@ -3,8 +3,9 @@ import Link from "next/link";
 import { NavLink } from "@/components/NavLink";
 import { branding } from "@/lib/branding";
 import type { Session } from "@/lib/auth";
+import { USER_ROLE_LABELS } from "@/lib/types";
 
-const OWNER_NAV = [
+const FULL_ACCESS_NAV = [
   { href: "/", label: "Dashboard" },
   { href: "/route", label: "Route" },
   { href: "/schedule", label: "Schedule" },
@@ -14,7 +15,7 @@ const OWNER_NAV = [
   { href: "/settings", label: "Settings" },
 ];
 
-const CREW_NAV = [
+const OPERATIONS_NAV = [
   { href: "/route", label: "Route" },
   { href: "/customers", label: "Customers" },
   { href: "/equipment", label: "Equipment" },
@@ -46,7 +47,7 @@ export function AppShell({
   session: Session;
   children: React.ReactNode;
 }) {
-  const nav = session.isOwner ? OWNER_NAV : CREW_NAV;
+  const nav = session.isAdmin ? FULL_ACCESS_NAV : OPERATIONS_NAV;
 
   return (
     <div className="min-h-screen bg-canvas">
@@ -54,7 +55,7 @@ export function AppShell({
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           <div className="flex items-center justify-between gap-4 pb-3 pt-4">
             <Link
-              href={session.isOwner ? "/" : "/route"}
+              href={session.isAdmin ? "/" : "/route"}
               className="flex items-center gap-2.5 text-cut"
             >
               <LogoMark />
@@ -74,7 +75,7 @@ export function AppShell({
                   {session.profile.name || session.email}
                 </span>
                 <span className="block font-[family-name:var(--font-display)] text-[0.625rem] uppercase tracking-[0.18em] text-white/50">
-                  {session.isOwner ? "Owner" : "Crew"}
+                  {USER_ROLE_LABELS[session.profile.role]}
                 </span>
               </span>
               <form action="/auth/signout" method="post">

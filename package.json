@@ -1,5 +1,5 @@
 {
-  "name": "truecut-dashboard",
+  "name": "blair-lawn-dashboard",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "verify": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/register-alias.mjs scripts/verify-core.mts"
+    "verify": "node --experimental-strip-types --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/register-alias.mjs scripts/verify-core.mts",
+    "verify:db": "bash scripts/verify-db.sh"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
