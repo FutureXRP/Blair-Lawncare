@@ -40,7 +40,7 @@ npm run dev
 | `QBO_REDIRECT_URI` | Must match the Intuit app exactly, ending in `/api/qbo/callback` |
 | `QBO_ENVIRONMENT` | `sandbox` or `production` |
 | `QBO_TOKEN_ENCRYPTION_KEY` | 32 bytes, base64. `openssl rand -base64 32` |
-| `CRON_SECRET` | Shared secret for `/api/qbo/sync`. Vercel sets this for cron |
+| `CRON_SECRET` | Shared secret for `/api/qbo/sync`. You choose the value, Vercel then sends it as a bearer header on each cron run. Required in production |
 | `APP_TIME_ZONE` | Operating timezone, decides what "today" means on the route |
 
 Secrets never go in the repo. The QBO access and refresh tokens are stored in
